@@ -1,0 +1,23 @@
+{
+  "name": "s.theme",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "prepack": "del ./dist && tsc -b"
+  },
+  "files": [
+    "dist"
+  ],
+  "author": "Syler",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/deepmerge": "^2.2.0",
+    "del-cli": "^3.0.0",
+    "tslib": "^1.10.0",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "deepmerge": "^4.2.2"
+  }
+}
