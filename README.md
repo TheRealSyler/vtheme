@@ -1,358 +1,119 @@
 ## S.Theme
 
+<span id="BADGE_GENERATION_MARKER_0"></span>
+[![npmV](https://img.shields.io/npm/v/s.theme?color=green)](https://www.npmjs.com/package/s.theme) [![min](https://img.shields.io/bundlephobia/min/s.theme)](https://bundlephobia.com/result?p=s.theme) [![install](https://badgen.net/packagephobia/install/s.theme)](https://packagephobia.now.sh/result?p=s.theme) [![githubLastCommit](https://img.shields.io/github/last-commit/TheRealSyler/s.theme)](https://github.com/TheRealSyler/s.theme)
+<span id="BADGE_GENERATION_MARKER_1"></span>
+
 <span id="DOC_GENERATION_MARKER_0"></span>
 
 # Docs
 
-- **[directive](#directive)**
-
-  - [DirectiveInputBase](#directiveinputbase)
-  - [VThemeDirectiveInput](#vthemedirectiveinput)
-
-- **[extraFunctions](#extrafunctions)**
-
-  - [ThemeTransition](#themetransition)
-
-- **[helpers](#helpers)**
-
-  - [VThemeLoaderColors](#vthemeloadercolors)
-  - [VThemeLoaderCss](#vthemeloadercss)
-  - [VThemeLoader](#vthemeloader)
-  - [VThemeRouterLink](#vthemerouterlink)
-  - [VThemeScrollbar](#vthemescrollbar)
-  - [VThemeColor](#vthemecolor)
-
 - **[index](#index)**
 
-  - [ThemeController](#themecontroller)
-
-- **[save](#save)**
-
-  - [SaveTheme](#savetheme)
-
-- **[store](#store)**
-
-  - [Color](#color)
   - [ITheme](#itheme)
   - [ThemeOptions](#themeoptions)
-
-- **[update](#update)**
-
-  - [UpdateTheme](#updatetheme)
-  - [GetColor](#getcolor)
-  - [GetOptions](#getoptions)
-
-### directive
-
-##### DirectiveInputBase
-
-```typescript
-interface DirectiveInputBase {
-  background: string;
-  color: string;
-  fill: string;
-  border: string;
-}
-```
-
-##### VThemeDirectiveInput
-
-```typescript
-interface VThemeDirectiveInput extends DirectiveInputBase {
-  isImage: boolean;
-  hover: DirectiveInputBase;
-  focus: DirectiveInputBase;
-  active: DirectiveInputBase;
-  after: DirectiveInputBase;
-  before: DirectiveInputBase;
-  font: string;
-  placeholder: {
-    color: string;
-    hover: string;
-    focus: string;
-  };
-  shadow: boolean | 'sm' | 'lg' | 'strong';
-  update:
-    | Array<{
-        type: 'shadow' | 'color' | 'background' | 'fill' | 'border' | 'hover' | 'before' | 'after';
-        value: string | DirectiveInputBase;
-      }>
-    | true;
-}
-```
-
-### extraFunctions
-
-##### ThemeTransition
-
-```typescript
-function ThemeTransition(): void;
-```
-
-### helpers
-
-##### VThemeLoaderColors
-
-```typescript
-interface VThemeLoaderColors {
-  /**
-   * Loader primary color in Css color format, `#35a` etc.
-   */
-  primary: string;
-  /**
-   * Loader accent color in Css color format, `#35a` etc.
-   */
-  accent: string;
-}
-```
-
-##### VThemeLoaderCss
-
-```typescript
-interface VThemeLoaderCss {
-  /**
-   * Loader width in Css unit format, `1px` | `1rem` etc.
-   */
-  width: string;
-  /**
-   * Loader height in Css unit format, `1px` | `1rem` etc.
-   */
-  height: string;
-  /**
-   * Loader rotation speed in Css unit format, `1s` | `100ms` etc.
-   */
-  speed: string;
-  /**
-   * Loader margin in Css unit format, `1px` | `1rem` etc.
-   */
-  margin: string;
-  /**
-   * Loader border width in Css unit format, `1px` | `1rem` etc.
-   */
-  borderWidth: string;
-}
-```
-
-##### VThemeLoader
-
-```typescript
-class VThemeLoader extends VThemeBaseHelper<VThemeLoaderColors> {
-  width: string;
-  height: string;
-  speed: string;
-  margin: string;
-  borderWidth: string;
-  constructor(options?: Partial<VThemeLoaderColors>, cssOptions?: Partial<VThemeLoaderCss>);
-}
-```
-
-##### VThemeRouterLink
-
-```typescript
-class VThemeRouterLink extends VThemeBaseHelper<VThemeRouterLinkOptions> {
-  constructor(options?: Partial<VThemeRouterLinkOptions>);
-}
-```
-
-##### VThemeScrollbar
-
-```typescript
-class VThemeScrollbar {
-  /**
-   * Scrollbar track color in Css color format, `#35a` etc.
-   */
-  track: string;
-  /**
-   * Scrollbar thumb color in Css color format, `#35a` etc.
-   */
-  thumb: string;
-  /**
-   * Scrollbar thumb hover color in Css color format, `#35a` etc.
-   */
-  thumbHover: string;
-  /**
-   * Scrollbar width in Css unit format, `1px` | `1rem` etc.
-   */
-  width: string;
-  /**
-   * Scrollbar width in Css unit format, `1px` | `1rem` etc.
-   */
-  height: string;
-  /**
-   * Scrollbar width in Css unit format, `1px` | `1rem` etc.
-   */
-  radius: string;
-  constructor(
-    /**
-     * Scrollbar track color in Css color format, `#35a` etc.
-     */
-    track: string,
-    /**
-     * Scrollbar thumb color in Css color format, `#35a` etc.
-     */
-    thumb: string,
-    /**
-     * Scrollbar thumb hover color in Css color format, `#35a` etc.
-     */
-    thumbHover: string,
-    options?: {
-      width?: number | string;
-      height?: number | string;
-      radius?: number | string;
-    }
-  );
-}
-```
-
-##### VThemeColor
-
-```typescript
-class VThemeColor {
-  value: string;
-  options: VThemeColorOptions;
-  constructor(
-    /**
-     * Color value in Css color format, `#35a` etc.
-     */
-    color: string,
-    /**
-     * Settings, fill is false by Default.
-     */
-    options?: VThemeColorOptions
-  );
-}
-```
+  - [ThemeManager](#thememanager)
 
 ### index
-
-##### ThemeController
-
-```typescript
-/**
- * TODO
- */
-class ThemeController {
-  static store: ThemeStore;
-  static Init(options?: ThemeOptions): void;
-}
-```
-
-### save
-
-##### SaveTheme
-
-```typescript
-/**
- * Saves the Theme to local Storage.
- */
-function SaveTheme(): void;
-```
-
-### store
-
-##### Color
-
-```typescript
-type Color = VThemeColor | string;
-```
 
 ##### ITheme
 
 ```typescript
-/**
- * TODO
- */
+/**Theme Template Interface */
 interface ITheme {
-  name: string;
-  /**
-   * If true the theme will be saved when the `SaveTheme` function gets called.
-   */
-  canBeModified: boolean;
-  /**
-   * Theme Colors
-   */
-  colors: {
-    [key: string]: Color;
-  };
-  /**
-   * Theme Fonts (font-family in css)
-   */
-  fonts: {
-    [key: string]: string;
-  };
-  defaults: {
-    /**
-     * Default Text Color, Note the Color has to be in the theme colors.
-     */
-    color: string;
-    /**
-     * Default Background Color, Note the Color has to be in the theme colors.
-     */
-    background: string;
-    /**
-     * Default Font Family, Note the font has to be in the theme fonts.
-     */
-    font: string;
-  };
-  invertImageIcon: boolean;
-  shadow?: {
-    color: Color;
-  };
-  data?: {
-    [key: string]: any;
-  };
-  scrollBar?: VThemeScrollbar;
-  loader?: VThemeLoader;
-  routerLink?: VThemeRouterLink;
+    name: string;
+    /** If true the theme will be saved when the `Save` Method gets called.  */
+    canBeModified: boolean;
+    /** Theme Colors */
+    colors: {
+        [key: string]: string;
+    };
+    /** Theme Fonts (font-family in css) */
+    fonts: {
+        [key: string]: string;
+    };
+    /**Sets the body tag styles. */
+    defaults?: {
+        /** Default Text Color, Note the Color has to be in the theme colors. */
+        color: string;
+        /** Default Background Color, Note the Color has to be in the theme colors. */
+        background: string;
+        /** Default Font Family, Note the font has to be in the theme fonts. */
+        font: string;
+    };
+    /** can be used to store additional data. */
+    data?: {
+        [key: string]: any;
+    };
+    scrollBar?: ThemeScrollbar;
 }
 ```
 
 ##### ThemeOptions
 
 ```typescript
-/**
- * Vtheme Installation Options.
- */
+/**Theme Installation Options. */
 interface ThemeOptions {
-  defaultTheme: string;
-  themes: {
-    [name: string]: ITheme;
-  };
-  debug?: {
-    ignoreCannotBeModified?: boolean;
-  };
-  Log?: {
-    Mutations?: boolean;
-    ThemeUpdates?: boolean;
-    ThemeSaves?: boolean;
-    Init?: boolean;
-  };
+    debug?: {
+        ignoreCannotBeModified?: boolean;
+    };
+    Log?: {
+        Mutations?: boolean;
+        ThemeUpdates?: boolean;
+        ThemeSaves?: boolean;
+        Init?: boolean;
+    };
 }
 ```
 
-### update
-
-##### UpdateTheme
+##### ThemeManager
 
 ```typescript
-/**
- * Updates the Dom with the current theme based on the given options.
- * only updates the colors if no options are provided.
- */
-function UpdateTheme(options?: UpdateThemeOptions | boolean): void;
+class ThemeManager<Theme extends ITheme, Themes extends IThemes<Theme>> {
+    private _currentTheme;
+    private _themes;
+    private _debug;
+    private _log;
+    constructor(themes: Themes, defaultTheme: keyof Themes, options?: ThemeOptions);
+    /**Change/Get any Theme */
+    Themes: {
+        /**Gets a theme. */
+        get: (theme?: keyof Themes | undefined) => Themes[keyof Themes];
+        /**Gets a property of a theme. */
+        getProperty: <T extends keyof Theme>(property: T, theme?: keyof Themes | undefined) => Theme[T];
+        /**Gets a property of a property of a theme */
+        getSubProp: <T_1 extends Theme, K extends "data" | "colors" | "fonts" | "defaults", J extends keyof T_1[K]>(property: K, key: J, theme?: keyof Themes | undefined) => any;
+        /**Sets a theme. */
+        set: (value: Theme, theme?: keyof Themes | undefined) => void;
+        /**Sets a property of a theme. */
+        setProperty: <T_2 extends Theme, K_1 extends keyof T_2>(property: K_1, value: T_2[K_1], theme?: keyof Themes | undefined) => void;
+        /**Sets a property of a property of a theme. */
+        setSubProperty: <T_3 extends Theme, K_2 extends "data" | "colors" | "fonts" | "defaults", J_1 extends keyof T_3[K_2]>(property: K_2, key: J_1, value: T_3[K_2][J_1], theme?: keyof Themes | undefined) => void;
+        /**Key Get Theme Name (key) */
+        key: () => keyof Themes;
+    };
+    /**Utility for assigning classes */
+    Class: {
+        colors: (color: keyof Theme["colors"], property: ClassProperty, selector?: "hover" | "active" | "after" | "before" | "focus" | "placeholder" | "placeholder-hover" | "placeholder-focus" | undefined) => string;
+        fonts: (font: keyof Theme["fonts"]) => string;
+    };
+    /**Sets the Current Theme. */
+    SetTheme(theme: keyof Themes): void;
+    /**
+     * Updates the Dom with the current theme based on the given options.
+     * only updates the colors if no options are provided.
+     */
+    Update(options?: UpdateThemeOptions | boolean): void;
+    /** Saves the Themes to local Storage. */
+    Save(): void;
+    private _getThemeKey;
+    private _getThemeFromLocalStorage;
+}
 ```
 
-##### GetColor
-
-```typescript
-function GetColor(input: string | VThemeColor): string;
-```
-
-##### GetOptions
-
-```typescript
-function GetOptions(input: string | VThemeColor): VThemeColorOptions;
-```
-
-_Generated With_ **[ts-doc-gen](https://www.npmjs.com/package/ts-doc-gen)**
+_Generated with_ **[suf-cli](https://www.npmjs.com/package/suf-cli)**
 <span id="DOC_GENERATION_MARKER_1"></span>
+
+<span id="LICENSE_GENERATION_MARKER_0"></span>
+Copyright (c) 2019 Leonard Grosoli Licensed under the MIT license.
+<span id="LICENSE_GENERATION_MARKER_1"></span>

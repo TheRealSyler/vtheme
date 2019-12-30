@@ -27,18 +27,23 @@ export function HandleColorsUpdate<T extends ITheme>(TM: ThemeManager<T, any>) {
 
   const themeColors = TM.Themes.getProperty('colors');
   const themeDefaults = TM.Themes.getProperty('defaults');
+  const themeFonts = TM.Themes.getProperty('fonts');
   let colorStyleContent = '';
   if (themeDefaults) {
-    colorStyleContent += `
-//  b, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, span, input
-body { 
-  color: ${themeColors[themeDefaults.color]};
-}
-body {
-  font-family: ${TM.Themes.getProperty('fonts')[themeDefaults.font]};
-  background: ${themeColors[themeDefaults.background]};
+    const font =
+      themeFonts && themeDefaults.font ? `\n  font-family: ${themeFonts[themeDefaults.font]};` : '';
+    const bg =
+      themeColors && themeDefaults.background
+        ? `\n  background: ${themeColors[themeDefaults.background]};`
+        : '';
+    const color =
+      themeColors && themeDefaults.color ? `\n  color: ${themeColors[themeDefaults.color]};` : '';
+    if (font || bg || color) {
+      colorStyleContent += `
+${themeDefaults.selectors.join(', ')} {${font}${bg}${color}
 }
 `;
+    }
   }
   for (const key in themeColors) {
     if (themeColors.hasOwnProperty(key)) {

@@ -1,14 +1,15 @@
 import Merge from 'deepmerge';
 import { ThemeScrollbar } from './helpers';
-import {
-  UpdateThemeOptions,
-  defaultOptions,
-  HandleColorsUpdate,
-  HandleFontUpdate,
-  HandleScrollbar
-} from './update';
+import { HandleColorsUpdate, HandleFontUpdate, HandleScrollbar } from './update';
 
-import { ThemeLogMutation, ThemeCannotBeModifiedWarning, ConsoleLog, LogInit } from './console';
+import {
+  LogMutation,
+  LogCannotBeModifiedWarning,
+  LogInit,
+  LogSetTheme,
+  LogUpdate,
+  LogSave
+} from './console';
 import {
   ClassProperty,
   ClassSelector,
@@ -17,7 +18,7 @@ import {
 } from './classes';
 
 /** Internal */
-const ThemeDataStorageName = 't-theme-data';
+const ThemeDataStorageName = 's.theme-data';
 
 /** Internal */
 class ThemeData {
@@ -27,24 +28,25 @@ class ThemeData {
 /**Theme Template Interface */
 export interface ITheme {
   name: string;
-  /** If true the theme will be saved when the `Save` Method gets called.  */
-  canBeModified: boolean;
+  /** If true the theme will be saved when the `Save` Method gets called.*/
+  canBeModified?: boolean;
   /** Theme Colors */
-  colors: {
+  colors?: {
     [key: string]: string;
   };
   /** Theme Fonts (font-family in css) */
-  fonts: {
+  fonts?: {
     [key: string]: string;
   };
   /**Sets the body tag styles. */
   defaults?: {
-    /** Default Text Color, Note the Color has to be in the theme colors. */
-    color: string;
-    /** Default Background Color, Note the Color has to be in the theme colors. */
-    background: string;
-    /** Default Font Family, Note the font has to be in the theme fonts. */
-    font: string;
+    selectors: string[];
+    /** Default Text Color */
+    color?: string;
+    /** Default Background Color. */
+    background?: string;
+    /** Default Font Family. */
+    font?: string;
   };
   /** can be used to store additional data. */
   data?: {
@@ -59,16 +61,17 @@ export interface ThemeOptions {
     ignoreCannotBeModified?: boolean;
   };
   Log?: {
-    Mutations?: boolean;
-    ThemeUpdates?: boolean;
-    ThemeSaves?: boolean;
+    Mutation?: boolean;
+    Update?: boolean;
+    Save?: boolean;
     Init?: boolean;
+    SetTheme?: boolean;
   };
 }
 
 type IThemes<T> = { [key: string]: T };
 
-export default class ThemeManager<Theme extends ITheme, Themes extends IThemes<Theme>> {
+export class ThemeManager<Theme extends ITheme, Themes extends IThemes<Theme>> {
   private _currentTheme: keyof Themes = '';
   private _themes: Themes;
   private _debug: ThemeOptions['debug'] = {
@@ -78,7 +81,8 @@ export default class ThemeManager<Theme extends ITheme, Themes extends IThemes<T
   private _log = {
     Mutation: false,
     Update: false,
-    Save: false
+    Save: false,
+    SetTheme: false
   };
 
   constructor(themes: Themes, defaultTheme: keyof Themes, options?: ThemeOptions) {
@@ -90,19 +94,22 @@ export default class ThemeManager<Theme extends ITheme, Themes extends IThemes<T
         this._debug = Object.assign(this._debug, options.debug);
       }
       if (options.Log) {
-        if (options.Log.Mutations !== undefined) {
-          this._log.Mutation = options.Log.Mutations;
+        if (options.Log.Mutation !== undefined) {
+          this._log.Mutation = options.Log.Mutation;
         }
-        if (options.Log.ThemeUpdates !== undefined) {
-          this._log.Update = options.Log.ThemeUpdates;
+        if (options.Log.Update !== undefined) {
+          this._log.Update = options.Log.Update;
         }
-        if (options.Log.ThemeSaves !== undefined) {
-          this._log.Save = options.Log.ThemeSaves;
+        if (options.Log.Save !== undefined) {
+          this._log.Save = options.Log.Save;
+        }
+        if (options.Log.SetTheme !== undefined) {
+          this._log.SetTheme = options.Log.SetTheme;
         }
       }
     }
     this._getThemeFromLocalStorage();
-    this.Update(true);
+    this.Update();
     if (options?.Log?.Init) {
       LogInit();
     }
@@ -130,12 +137,11 @@ export default class ThemeManager<Theme extends ITheme, Themes extends IThemes<T
       const themeKey = this._getThemeKey(theme);
       if (this._themes[themeKey].canBeModified || this._debug?.ignoreCannotBeModified) {
         this._themes[themeKey] = value as any;
-
-        if (this._log.Mutation) {
-          ThemeLogMutation({ property: 'ALL', value, theme: themeKey });
+        if (this._log.SetTheme) {
+          LogSetTheme(themeKey as string);
         }
       } else {
-        ThemeCannotBeModifiedWarning(themeKey);
+        LogCannotBeModifiedWarning(themeKey);
       }
     },
     /**Sets a property of a theme. */
@@ -149,10 +155,10 @@ export default class ThemeManager<Theme extends ITheme, Themes extends IThemes<T
         this._themes[themeKey][property as any] = value; // TODO remove as any if possible
 
         if (this._log.Mutation) {
-          ThemeLogMutation({ property, value, theme: themeKey });
+          LogMutation({ property, value, theme: themeKey });
         }
       } else {
-        ThemeCannotBeModifiedWarning(themeKey);
+        LogCannotBeModifiedWarning(themeKey);
       }
     },
     /**Sets a property of a property of a theme. */
@@ -171,10 +177,10 @@ export default class ThemeManager<Theme extends ITheme, Themes extends IThemes<T
         this._themes[themeKey][property as any][key] = value; // TODO remove as any if possible
 
         if (this._log.Mutation) {
-          ThemeLogMutation({ property, value, theme: themeKey });
+          LogMutation({ property, value, theme: themeKey });
         }
       } else {
-        ThemeCannotBeModifiedWarning(themeKey);
+        LogCannotBeModifiedWarning(themeKey);
       }
     },
     /**Key Get Theme Name (key) */
@@ -192,42 +198,24 @@ export default class ThemeManager<Theme extends ITheme, Themes extends IThemes<T
   public SetTheme(theme: keyof Themes) {
     this._currentTheme = theme;
     if (this._log.Mutation) {
-      ThemeLogMutation({ property: 'currentTheme', value: theme });
+      LogMutation({ property: 'currentTheme', value: theme });
     }
   }
 
-  /**
-   * Updates the Dom with the current theme based on the given options.
-   * only updates the colors if no options are provided.
-   */
-  public Update(options: UpdateThemeOptions | boolean = defaultOptions) {
-    const all = typeof options === 'boolean' ? options : false;
-    if (typeof options === 'boolean') {
-      options = {};
-    }
-    if (all || options.updateColors) {
+  /** Updates the css classes with the current theme. */
+  public Update() {
+    if (this.Themes.getProperty('colors')) {
       HandleColorsUpdate(this);
     }
-    if (all || options.updateFonts) {
+    if (this.Themes.getProperty('fonts')) {
       HandleFontUpdate(this);
     }
-    if (all || options.updateScrollbar) {
-      HandleScrollbar(this.Themes.getProperty('scrollBar'));
+    const scrollBar = this.Themes.getProperty('scrollBar');
+    if (scrollBar) {
+      HandleScrollbar(scrollBar);
     }
     if (this._log.Update) {
-      let op = '';
-      if (!all) {
-        for (const key in options) {
-          if (options.hasOwnProperty(key)) {
-            if (options[key]) {
-              op += key.replace('update', ' ');
-            }
-          }
-        }
-        ConsoleLog('Updated', op, this._currentTheme);
-      } else {
-        ConsoleLog('Updated', ' All', this._currentTheme);
-      }
+      LogUpdate(this._currentTheme as string);
     }
   }
 
@@ -245,7 +233,7 @@ export default class ThemeManager<Theme extends ITheme, Themes extends IThemes<T
       }
     }
     if (this._log.Save) {
-      ConsoleLog('Saved', saved);
+      LogSave(saved);
     }
 
     window.localStorage.setItem(
@@ -282,3 +270,4 @@ export default class ThemeManager<Theme extends ITheme, Themes extends IThemes<T
 }
 
 export * from './helpers';
+export default ThemeManager;

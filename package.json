@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "prepack": "del ./dist && tsc -b"
+    "prepack": "del ./dist && tsc -b && suf"
   },
   "files": [
     "dist"
@@ -14,10 +14,12 @@
   "devDependencies": {
     "@types/deepmerge": "^2.2.0",
     "del-cli": "^3.0.0",
+    "suf-cli": "^0.1.0",
     "tslib": "^1.10.0",
     "typescript": "^3.7.2"
   },
   "dependencies": {
+    "@sorg/log": "^1.0.3",
     "deepmerge": "^4.2.2"
   }
 }

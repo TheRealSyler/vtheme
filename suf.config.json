@@ -1,0 +1,22 @@
+{
+  "badges": {
+    "name": "s.theme",
+    "github": "TheRealSyler",
+    "repo": "s.theme",
+    "out": "README.md",
+    "badges": ["npmV npm ?color=green", "min bundle", "install package", "githubLastCommit github"]
+  },
+  "tsDoc": {
+    "title": "Docs",
+    "dir": "dist",
+    "out": "README.md",
+    "include": "index"
+  },
+  "license": {
+    "name": "Leonard Grosoli",
+    "type": "mit",
+    "year": "2019",
+    "out": "README.md",
+    "file": "LICENSE"
+  }
+}
