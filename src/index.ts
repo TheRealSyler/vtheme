@@ -27,7 +27,7 @@ class ThemeData {
 
 /**Theme Template Interface */
 export interface ITheme {
-  name: string;
+  name?: string;
   /** If true the theme will be saved when the `Save` Method gets called.*/
   canBeModified?: boolean;
   /** Theme Colors */
@@ -183,8 +183,10 @@ export class ThemeManager<Theme extends ITheme, Themes extends IThemes<Theme>> {
         LogCannotBeModifiedWarning(themeKey);
       }
     },
-    /**Key Get Theme Name (key) */
-    key: () => this._currentTheme
+    /**current theme name (key) */
+    key: () => this._currentTheme,
+    /**theme names (keys)*/
+    keys: () => Object.keys(this._themes) as (keyof Themes)[]
   };
 
   /**Utility for assigning classes */

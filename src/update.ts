@@ -57,7 +57,7 @@ ${themeDefaults.selectors.join(', ')} {${font}${bg}${color}
 .t-bf-bg-${key}::before {
   background-color: ${color};
 }
-t-c-${key},
+.t-c-${key},
 .t-h-c-${key}:hover,
 .t-f-c-${key}:focus,
 .t-a-c-${key}:active,
