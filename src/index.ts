@@ -8,13 +8,13 @@ import {
   LogInit,
   LogSetTheme,
   LogUpdate,
-  LogSave
+  LogSave,
 } from './console';
 import {
   ClassProperty,
   ClassSelector,
   convertClassSelector,
-  convertClassProperty
+  convertClassProperty,
 } from './classes';
 
 /** Internal */
@@ -75,14 +75,14 @@ export class ThemeManager<Theme extends ITheme, Themes extends IThemes<Theme>> {
   private _currentTheme: keyof Themes = '';
   private _themes: Themes;
   private _debug: ThemeOptions['debug'] = {
-    ignoreCannotBeModified: false
+    ignoreCannotBeModified: false,
   };
 
   private _log = {
     Mutation: false,
     Update: false,
     Save: false,
-    SetTheme: false
+    SetTheme: false,
   };
 
   constructor(themes: Themes, defaultTheme: keyof Themes, options?: ThemeOptions) {
@@ -186,14 +186,14 @@ export class ThemeManager<Theme extends ITheme, Themes extends IThemes<Theme>> {
     /**current theme name (key) */
     key: () => this._currentTheme,
     /**theme names (keys)*/
-    keys: () => Object.keys(this._themes) as (keyof Themes)[]
+    keys: () => Object.keys(this._themes) as (keyof Themes)[],
   };
 
   /**Utility for assigning classes */
   Class = {
     colors: (color: keyof Theme['colors'], property: ClassProperty, selector?: ClassSelector) =>
       `t-${convertClassSelector(selector)}${convertClassProperty(property)}${color}`,
-    fonts: (font: keyof Theme['fonts']) => `t-font-${font}`
+    fonts: (font: keyof Theme['fonts']) => `t-font-${font}`,
   };
 
   /**Sets the Current Theme. */
@@ -271,5 +271,6 @@ export class ThemeManager<Theme extends ITheme, Themes extends IThemes<Theme>> {
   }
 }
 
+export * from './extraFunctions';
 export * from './helpers';
 export default ThemeManager;
