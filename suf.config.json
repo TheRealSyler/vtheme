@@ -10,7 +10,7 @@
     "title": "Docs",
     "dir": "dist",
     "out": "README.md",
-    "include": "index"
+    "include": ["theme", "helpers", "extraFunctions"]
   },
   "license": {
     "name": "Leonard Grosoli",
