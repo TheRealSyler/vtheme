@@ -1,157 +1,176 @@
-import { Logger, LoggerType } from '@sorg/log';
-export const consoleColors = {
+import { Log, LogS } from 'suf-log';
+
+export const colors = {
   property: '#6af',
-  theme: '#fa9',
-  value: '#0f0',
-  default: 'white',
-  bg: '#1b0a1baa'
+  key: '#0af',
+  theme: '#DCDCAA',
+  value: '#2Ef9a0',
+  default: '#9CDCFE',
+  warning: '#f41',
+  bg: '#1b0a1baa',
+  themeTag: '#CE9178',
 };
+const sPadding = '0.7rem';
+const padding = `${sPadding} 0`;
 
-const start = {
-  background: consoleColors.bg,
-  color: consoleColors.default,
-  padding: '0.7rem 0',
-  'padding-left': '0.7rem',
-  'border-top-left-radius': '5px',
-  'border-bottom-left-radius': '5px'
-};
-type StyleType = 'property' | 'value' | 'default' | 'bg' | 'theme';
-const middleStyle = (type: StyleType) => {
-  return {
-    background: consoleColors.bg,
-    padding: '0.7rem 0',
-    color: consoleColors[type]
-  };
-};
-const endStyle = (type: StyleType) => {
-  return {
-    background: consoleColors.bg,
-    padding: '0.7rem 0',
-    color: consoleColors[type],
-    'padding-right': '1rem',
-    'border-top-right-radius': '5px',
-    'border-bottom-right-radius': '5px'
-  };
-};
+const BorderRadius = '5px';
+const fontSize = '1.2rem';
 
-const logger = new Logger<{
-  mutationSimple: LoggerType;
-  mutationAll: LoggerType;
-  mutationTheme: LoggerType;
-  mutationKey: LoggerType;
-  setTheme: LoggerType;
-  updateOrSave: LoggerType;
-}>({
-  mutationSimple: {
-    styles: [start, middleStyle('property'), middleStyle('default'), endStyle('value')]
-  },
-  mutationAll: {
-    styles: [
-      start,
-      middleStyle('property'),
-      middleStyle('default'),
-      middleStyle('property'),
-      middleStyle('default'),
-      middleStyle('theme'),
-      middleStyle('default'),
-      endStyle('value')
-    ]
-  },
-  mutationKey: {
-    styles: [
-      start,
-      middleStyle('property'),
-      middleStyle('default'),
-      middleStyle('property'),
-      middleStyle('default'),
-      endStyle('value')
-    ]
-  },
-  mutationTheme: {
-    styles: [
-      start,
-      middleStyle('property'),
-      middleStyle('default'),
-      middleStyle('theme'),
-      middleStyle('default'),
-      endStyle('value')
-    ]
-  },
-  setTheme: {
-    styles: [start, endStyle('theme')]
-  },
-
-  updateOrSave: {
-    styles: [start, endStyle('theme')]
-  }
+const start = (color: StyleType = 'default') => ({
+  background: colors.bg,
+  display: 'inline-block',
+  'font-size': fontSize,
+  color: colors[color],
+  padding: padding,
+  'padding-left': sPadding,
+  'border-top-left-radius': BorderRadius,
+  'border-bottom-left-radius': BorderRadius,
 });
 
+const one = (color: StyleType = 'default') => ({
+  background: colors.bg,
+  display: 'inline-block',
+  'font-size': fontSize,
+  color: colors[color],
+  padding: sPadding,
+  'padding-left': '1rem',
+  'padding-right': '1rem',
+  'border-radius': BorderRadius,
+});
+type StyleType = keyof typeof colors;
+
+const mid = (color: StyleType = 'default') => {
+  return {
+    background: colors.bg,
+    display: 'inline-block',
+    'font-size': fontSize,
+    padding: padding,
+    color: colors[color],
+  };
+};
+const end = (color: StyleType = 'default') => {
+  return {
+    background: colors.bg,
+    padding: padding,
+    display: 'inline-block',
+    color: colors[color],
+    'font-size': fontSize,
+    'padding-right': '1rem',
+    'border-top-right-radius': BorderRadius,
+    'border-bottom-right-radius': BorderRadius,
+  };
+};
+end();
+const logStyles = {
+  updateOrSaveOrSet: [start(), mid('theme'), end('themeTag')],
+  setTheme: [start(), mid('theme'), mid('themeTag'), mid(), end('value')],
+  setSubProp: [
+    start(),
+    mid('theme'),
+    mid('themeTag'),
+    mid(),
+    mid('property'),
+    mid(),
+    mid('key'),
+    mid(),
+    end('value'),
+  ],
+  setKey: [start(), mid('property'), mid('default'), mid('property'), mid('default'), end('value')],
+  setThemeProp: [
+    start(),
+    mid('theme'),
+    mid('themeTag'),
+    mid(),
+    mid('property'),
+    mid(),
+    end('value'),
+  ],
+  setCurrentTheme: [start(), mid('key'), mid(), mid('theme'), end('themeTag')],
+};
+
 export function LogUpdate(theme: string) {
-  logger.Log('updateOrSave', 'Updated css with theme ', theme);
+  LogS(logStyles.updateOrSaveOrSet, 'Updated using:', theme, '(theme)');
 }
-export function LogSave(themes: string) {
-  logger.Log('updateOrSave', 'Saved themes: ', themes);
+export function LogSave(themes: string[]) {
+  if (themes.length === 0) {
+    Log({ message: 'Saved (no themes marked as canBeModified)', style: one() });
+    return;
+  }
+
+  if (themes.length === 1) {
+    LogS(logStyles.updateOrSaveOrSet, 'Saved:', themes[0].toString(), '(theme)');
+    return;
+  }
+
+  LogS(logStyles.updateOrSaveOrSet, 'Saved:', themes.join(', '), '(themes)');
 }
 
 export function LogCannotBeModifiedWarning(theme: any) {
-  console.warn(`Theme "${theme}" cannot Be modified`);
+  Log(
+    {
+      message: theme,
+      style: { ...start('theme'), 'font-weight': 'bold' },
+    },
+    {
+      message: '(theme)',
+      style: { ...mid('themeTag'), 'font-weight': 'bold' },
+    },
+    {
+      message: 'cannot be modified!',
+      style: { ...end('warning'), 'font-weight': 'bold' },
+    }
+  );
 }
 
-export function LogSetTheme(theme: string) {
-  logger.Log('setTheme', 'Set Theme: ', theme);
-}
-export function LogMutation(data: { property: any; value: any; key?: string; theme?: any }) {
-  if (data.key || data.theme) {
-    if (data.key && data.theme) {
-      logger.Log(
-        'mutationAll',
-        'Changed property ',
-        data.key,
-        ' of property ',
-        data.property,
-        ' of theme ',
-        data.theme,
-        ' to ',
-        data.value
-      );
-    } else if (data.key) {
-      logger.Log(
-        'mutationKey',
-        'Changed property ',
-        data.key,
-        ' of property ',
-        data.property,
-        ' to ',
-        data.value
-      );
-    } else {
-      logger.Log(
-        'mutationTheme',
-        'Changed property ',
-        data.property,
-        ' of theme ',
-        data.theme,
-        ' to ',
-        data.value
-      );
-    }
-  } else {
-    logger.Log('mutationSimple', 'Changed property ', data.property, ' to ', data.value);
+export function LogWarning(message: string, from?: string) {
+  if (from) {
+    Log(
+      { message: from, style: { ...start(), 'font-weight': 'bold' } },
+      {
+        message,
+        style: {
+          ...end('warning'),
+          'font-weight': 'bold',
+        },
+      }
+    );
+    return;
   }
+  Log({
+    message,
+    style: {
+      ...one('warning'),
+      'font-weight': 'bold',
+    },
+  });
+}
+
+export function LogSetCurrentTheme(value: any) {
+  LogS(logStyles.setCurrentTheme, 'Set:', 'current theme', 'to', value, '(theme)');
+}
+export function LogSetTheme(theme: string, value: any) {
+  LogS(logStyles.setTheme, 'Set:', theme, '(theme)', 'to', value);
+}
+export function LogSetProp(property: string, theme: any, value: any) {
+  LogS(logStyles.setThemeProp, 'Set:', theme, '(theme)', '>', property, 'to', value);
+}
+export function LogSetSubProp(property: string, theme: any, key: any, value: any) {
+  LogS(logStyles.setSubProp, 'Set:', theme, '(theme)', '>', property, '>', key, 'to', value);
 }
 
 export function LogInit() {
-  console.log(
-    '%cS.Theme Initialized',
-    `
-background: ${consoleColors.bg};
-padding: 3rem;
-border-radius: 20px;
-font-size: 4rem;
-font-weight: bold;
-text-align: center;
-color: ${consoleColors.default};
-text-shadow: 1.5px 1.5px 1px red, -1.5px -1.5px 1px blue;
-`
-  );
+  Log({
+    message: 'vTheme Initialized!',
+    style: {
+      background: colors.bg,
+      padding: '3rem',
+      display: 'inline-block',
+      'border-radius': '20px',
+      'font-size': '4rem',
+      'font-weight': 'bold',
+      'text-align': 'center',
+      color: 'white',
+      'text-shadow': '1.5px 1.5px 1px red, -1.5px -1.5px 1px blue',
+    },
+  });
 }
