@@ -1,20 +1,44 @@
-export function ThemeTransition({
-  removeAfter = 230,
-  loops = 3,
-  drawInterval = 20,
-  maxSmallShapes = 600,
-  maxLargeShapes = 30,
-  minSmallShapes = 50,
-  minLargeShapes = 10,
-  noiseOpacity = 0.1,
-  noiseMaxBrightness = 200,
-  minShapesOpacity = 0.3,
-  maxShapesOpacity = 0.8,
-}) {
+export type ThemeTransitionOptions = {
+  removeAfter?: number;
+  loops?: number;
+  drawInterval?: number;
+  maxSmallShapes?: number;
+  maxLargeShapes?: number;
+  minSmallShapes?: number;
+  minLargeShapes?: number;
+  noiseOpacity?: number;
+  noiseMaxBrightness?: number;
+  minShapesOpacity?: number;
+  maxShapesOpacity?: number;
+};
+/* istanbul ignore next */
+export function ThemeTransition(options?: ThemeTransitionOptions) {
+  const _options = {
+    removeAfter: 230,
+    loops: 3,
+    drawInterval: 20,
+    maxSmallShapes: 600,
+    maxLargeShapes: 30,
+    minSmallShapes: 50,
+    minLargeShapes: 10,
+    noiseOpacity: 0.1,
+    noiseMaxBrightness: 200,
+    minShapesOpacity: 0.3,
+    maxShapesOpacity: 0.8,
+  };
+
+  if (options) {
+    for (const key in options) {
+      if (Object.prototype.hasOwnProperty.call(options, key)) {
+        _options[key as keyof ThemeTransitionOptions] = options[key];
+      }
+    }
+  }
+
   const canvas = document.createElement('canvas');
   canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
-  canvas.id = 'THEME_TRANSITION_CANVAS_ID';
+  canvas.id = 'vtheme-extra-theme-transition';
   canvas.style.position = 'absolute';
   canvas.style.top = '0px';
   canvas.style.zIndex = '10000000';
@@ -29,19 +53,21 @@ export function ThemeTransition({
 
         drawSmallShapes();
         drawLargeShapes();
-        generateNoise(noiseOpacity);
-        if (loop <= loops) {
+        generateNoise(_options.noiseOpacity);
+        if (loop <= _options.loops) {
           loop++;
-          setTimeout(() => draw(), drawInterval);
+          setTimeout(() => draw(), _options.drawInterval);
         }
       }
     };
 
     const drawSmallShapes = () => {
       if (ctx !== null) {
-        const elementNum = Math.round(Math.max(Math.random() * maxSmallShapes, minSmallShapes));
+        const elementNum = Math.round(
+          Math.max(Math.random() * _options.maxSmallShapes, _options.minSmallShapes)
+        );
         for (let i = 0; i < elementNum; i++) {
-          ctx.fillStyle = randomRgb(maxShapesOpacity, minShapesOpacity);
+          ctx.fillStyle = randomRgb(_options.maxShapesOpacity, _options.minShapesOpacity);
           const height = Math.max(Math.random() * 14, 5);
           const width = Math.max(Math.random() * 150, 20);
           const x = Math.random() * window.innerWidth + (window.innerWidth / 2) * loop;
@@ -53,9 +79,11 @@ export function ThemeTransition({
 
     const drawLargeShapes = () => {
       if (ctx !== null) {
-        const elementNum = Math.round(Math.max(Math.random() * maxLargeShapes, minLargeShapes));
+        const elementNum = Math.round(
+          Math.max(Math.random() * _options.maxLargeShapes, _options.minLargeShapes)
+        );
         for (let i = 0; i < elementNum; i++) {
-          ctx.fillStyle = randomRgb(maxShapesOpacity, minShapesOpacity);
+          ctx.fillStyle = randomRgb(_options.maxShapesOpacity, _options.minShapesOpacity);
           const height = Math.max(Math.random() * 120, 60);
           const width = Math.max(Math.random() * 600, 100);
           const x = Math.random() * window.innerWidth + (window.innerWidth / 2) * loop;
@@ -80,9 +108,9 @@ export function ThemeTransition({
 
         for (x = 0; x < noiseCanvas.width; x++) {
           for (y = 0; y < noiseCanvas.height; y++) {
-            r = Math.floor(Math.random() * noiseMaxBrightness);
-            g = Math.floor(Math.random() * noiseMaxBrightness);
-            b = Math.floor(Math.random() * noiseMaxBrightness);
+            r = Math.floor(Math.random() * _options.noiseMaxBrightness);
+            g = Math.floor(Math.random() * _options.noiseMaxBrightness);
+            b = Math.floor(Math.random() * _options.noiseMaxBrightness);
 
             noiseCtx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + opacity + ')';
             noiseCtx.fillRect(x, y, 1, 1);
@@ -95,7 +123,7 @@ export function ThemeTransition({
     document.body.appendChild(canvas);
     setTimeout(() => {
       canvas.remove();
-    }, removeAfter);
+    }, _options.removeAfter);
 
     window.requestAnimationFrame(draw);
   } else {
