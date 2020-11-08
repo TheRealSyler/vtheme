@@ -130,7 +130,7 @@ export function ThemeTransition(options?: ThemeTransitionOptions) {
     canvas.remove();
   }
 }
-
+/* istanbul ignore next */
 function randomRgb(maxShapesOpacity: number, minShapesOpacity: number) {
   return `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, ${Math.max(
     Math.random() * maxShapesOpacity,
