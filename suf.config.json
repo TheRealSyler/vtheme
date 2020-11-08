@@ -9,7 +9,8 @@
       "min bundle",
       "install package",
       "githubLastCommit github",
-      "codecov codecov"
+      "codecov codecov",
+      "circleci circleci"
     ]
   },
   "tsDoc": {
