@@ -4,7 +4,13 @@
     "github": "TheRealSyler",
     "repo": "vtheme",
     "out": "README.md",
-    "badges": ["npmV npm ?color=green", "min bundle", "install package", "githubLastCommit github"]
+    "badges": [
+      "npmV npm ?color=green",
+      "min bundle",
+      "install package",
+      "githubLastCommit github",
+      "codecov codecov"
+    ]
   },
   "tsDoc": {
     "title": "Docs",
