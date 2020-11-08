@@ -1,7 +1,7 @@
 ## S.Theme
 
 <span id="BADGE_GENERATION_MARKER_0"></span>
-[![npmV](https://img.shields.io/npm/v/s.theme?color=green)](https://www.npmjs.com/package/s.theme) [![min](https://img.shields.io/bundlephobia/min/s.theme)](https://bundlephobia.com/result?p=s.theme) [![install](https://badgen.net/packagephobia/install/s.theme)](https://packagephobia.now.sh/result?p=s.theme) [![githubLastCommit](https://img.shields.io/github/last-commit/TheRealSyler/s.theme)](https://github.com/TheRealSyler/s.theme)
+[![npmV](https://img.shields.io/npm/v/vtheme?color=green)](https://www.npmjs.com/package/vtheme) [![min](https://img.shields.io/bundlephobia/min/vtheme)](https://bundlephobia.com/result?p=vtheme) [![install](https://badgen.net/packagephobia/install/vtheme)](https://packagephobia.now.sh/result?p=vtheme) [![githubLastCommit](https://img.shields.io/github/last-commit/TheRealSyler/vtheme)](https://github.com/TheRealSyler/vtheme)
 <span id="BADGE_GENERATION_MARKER_1"></span>
 
 <span id="DOC_GENERATION_MARKER_0"></span>
@@ -13,17 +13,15 @@
   - [ThemeTransitionOptions](#themetransitionoptions)
   - [ThemeTransition](#themetransition)
 
-- **[helpers](#helpers)**
+- **[interfaces](#interfaces)**
 
-  - [ThemeScrollbarColors](#themescrollbarcolors)
-  - [ThemeScrollbarCss](#themescrollbarcss)
   - [ThemeScrollbar](#themescrollbar)
+  - [ITheme](#itheme)
+  - [ThemeOptions](#themeoptions)
 
 - **[theme](#theme)**
 
-  - [ITheme](#itheme)
-  - [ThemeOptions](#themeoptions)
-  - [Theme](#theme)
+  - [vTheme](#vtheme)
 
 ### extraFunctions
 
@@ -51,58 +49,46 @@ type ThemeTransitionOptions = {
 function ThemeTransition(options?: ThemeTransitionOptions): void;
 ```
 
-### helpers
-
-##### ThemeScrollbarColors
-
-```typescript
-interface ThemeScrollbarColors {
-    /**
-     * Scrollbar track color in Css color format, `#35a` etc.
-     */
-    track: string;
-    /**
-     * Scrollbar thumb color in Css color format, `#35a` etc.
-     */
-    thumb: string;
-    /**
-     * Scrollbar thumb hover color in Css color format, `#35a` etc.
-     */
-    thumbHover: string;
-}
-```
-
-##### ThemeScrollbarCss
-
-```typescript
-interface ThemeScrollbarCss {
-    /**
-     * Scrollbar width in Css unit format, `1px` | `1rem` etc.
-     */
-    width: string | number;
-    /**
-     * Scrollbar width in Css unit format, `1px` | `1rem` etc.
-     */
-    height: string | number;
-    /**
-     * Scrollbar width in Css unit format, `1px` | `1rem` etc.
-     */
-    radius: string | number;
-}
-```
+### interfaces
 
 ##### ThemeScrollbar
 
 ```typescript
-class ThemeScrollbar extends ThemeBaseHelper<ThemeScrollbarColors> {
-    width: string;
-    height: string;
-    radius: string;
-    constructor(options?: Partial<ThemeScrollbarColors>, cssOptions?: Partial<ThemeScrollbarCss>);
+interface ThemeScrollbar {
+    /**
+     * Scrollbar width in Css unit format, `1px` | `1rem` etc.
+     * (chrome based only)
+     */
+    width?: string | number;
+    /**
+     * Scrollbar width in Css unit format, `1px` | `1rem` etc.
+     * (chrome based only)
+     */
+    height?: string | number;
+    /**
+     * Scrollbar width in Css unit format, `1px` | `1rem` etc.
+     * (chrome based only)
+     */
+    radius?: string | number;
+    /**
+     * Scrollbar track color in Css color format, `#35a` etc.
+     *
+     * (chrome, *firefox) *thumb and track properties need to be set.
+     */
+    track?: string;
+    /**
+     * Scrollbar thumb color in Css color format, `#35a` etc.
+     *
+     * (chrome, *firefox) *thumb and track properties need to be set.
+     */
+    thumb?: string;
+    /**
+     * Scrollbar thumb hover color in Css color format, `#35a` etc.
+     * (chrome based only)
+     */
+    thumbHover?: string;
 }
 ```
-
-### theme
 
 ##### ITheme
 
@@ -120,16 +106,6 @@ interface ITheme {
     fonts?: {
         [key: string]: string;
     };
-    /**Sets the body tag styles. */
-    defaults?: {
-        selectors: string[];
-        /** Default Text Color */
-        color?: string;
-        /** Default Background Color. */
-        background?: string;
-        /** Default Font Family. */
-        font?: string;
-    };
     /** can be used to store additional data. */
     data?: {
         [key: string]: any;
@@ -146,61 +122,60 @@ interface ThemeOptions {
     debug?: {
         ignoreCannotBeModified?: boolean;
     };
-    localStorageKey?: string;
     log?: {
-        change?: boolean;
+        /**Log all events*/
+        all?: boolean;
+        set?: boolean;
+        get?: boolean;
         update?: boolean;
         save?: boolean;
         init?: boolean;
-        setTheme?: boolean;
     };
 }
 ```
 
-##### Theme
+### theme
+
+##### vTheme
 
 ```typescript
-class Theme<Themes extends IThemes<ITheme>, Theme extends Themes[keyof Themes]> {
+class vTheme<Themes extends IThemes, Theme extends Themes[keyof Themes]> {
     private _currentTheme;
     private _themes;
     private _debug;
     private _styleSheets;
     private _log;
-    private localStorageKey;
+    private _localStorageKey;
     constructor(themes: Themes, defaultTheme: keyof Themes, options?: ThemeOptions);
-    /**Change/Get any Theme */
-    Themes: {
-        /**Gets a theme. */
-        get: (theme?: keyof Themes | undefined) => Themes[keyof Themes];
-        /**Gets a property of a theme. */
-        getProperty: <T extends keyof Themes[keyof Themes]>(property: T, theme?: keyof Themes | undefined) => Themes[keyof Themes][T];
-        /**Gets a property of a property of a theme */
-        getSubProp: <T_1 extends Theme, K extends "data" | "colors" | "fonts" | "defaults", J extends keyof T_1[K]>(property: K, key: J, theme?: keyof Themes | undefined) => any;
-        /**Sets a theme. */
-        set: (value: Theme, theme?: keyof Themes | undefined) => void;
-        /**Sets a property of a theme. */
-        setProperty: <T_2 extends Theme, K_1 extends keyof T_2>(property: K_1, value: T_2[K_1], theme?: keyof Themes | undefined) => void;
-        /**Sets a property of a property of a theme. */
-        setSubProperty: <T_3 extends Theme, K_2 extends "data" | "colors" | "fonts" | "defaults", J_1 extends keyof T_3[K_2]>(property: K_2, key: J_1, value: T_3[K_2][J_1], theme?: keyof Themes | undefined) => void;
-        /**current theme name (key) */
-        key: () => keyof Themes;
-        /**theme names (keys)*/
-        keys: () => (keyof Themes)[];
-    };
-    /**Get color or font class name*/
-    Class: {
-        color: (color: keyof Theme['colors'], property: ClassProperty, selector?: "hover" | "active" | "after" | "before" | "focus" | "placeholder" | "placeholder-hover" | "placeholder-focus" | undefined) => string;
-        font: (font: keyof Theme['fonts']) => string;
-    };
+    /**Gets a theme. */
+    get(theme?: keyof Themes): Themes[keyof Themes];
+    /**Gets a property of a theme. */
+    getProperty<T extends keyof Themes[keyof Themes]>(property: T, theme?: keyof Themes): Themes[keyof Themes][T];
+    /**Gets a property of a property of a theme */
+    getSubProp<T extends Theme, K extends keyof Pick<T, 'colors' | 'fonts' | 'data'>, J extends keyof T[K]>(property: K, key: J, theme?: keyof Themes): Themes[keyof Themes][K][J];
+    /**Sets a theme. */
+    set(value: Theme & ITheme, theme?: keyof Themes): void;
+    /**Sets a property of a theme. */
+    setProperty<T extends Theme, K extends keyof T>(property: K, value: T[K], theme?: keyof Themes): void;
+    /**Sets a property of a property of a theme. */
+    setSubProperty<T extends Theme, K extends keyof Pick<T, 'colors' | 'fonts' | 'data'>, J extends keyof T[K]>(property: K, key: J, value: T[K][J], theme?: keyof Themes): void;
+    /**current theme name (key) */
+    currentTheme(): keyof Themes;
+    /**theme names (keys)*/
+    themes(): (keyof Themes)[];
+    /**get color class name. */
+    color(color: keyof Theme['colors'], property: ClassProperty, selector?: ClassSelector): string;
+    /**Get font class name. */
+    font(font: keyof Theme['fonts']): string;
     /**Sets the Current Theme. */
-    SetTheme(theme: keyof Themes): void;
+    SetCurrentTheme(theme: keyof Themes): void;
     /** Updates the css classes with the current theme. */
     Update(): void;
-    private updateColors;
     /** Saves the Themes to local Storage. */
     Save(): void;
-    private _getThemeKey;
+    private _themeKey;
     private _getThemeFromLocalStorage;
+    private _disableLog;
 }
 ```
 

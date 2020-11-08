@@ -1,8 +1,8 @@
 {
   "badges": {
-    "name": "s.theme",
+    "name": "vtheme",
     "github": "TheRealSyler",
-    "repo": "s.theme",
+    "repo": "vtheme",
     "out": "README.md",
     "badges": ["npmV npm ?color=green", "min bundle", "install package", "githubLastCommit github"]
   },
@@ -10,7 +10,7 @@
     "title": "Docs",
     "dir": "dist",
     "out": "README.md",
-    "include": ["theme", "helpers", "extraFunctions"]
+    "include": ["theme", "extraFunctions", "interfaces"]
   },
   "license": {
     "name": "Leonard Grosoli",
