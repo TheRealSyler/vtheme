@@ -1,4 +1,4 @@
-import { Log, LogS } from 'suf-log';
+import { Log, LogS, LogSingle } from 'suf-log';
 
 export const colors = {
   property: '#6af',
@@ -60,7 +60,7 @@ const end = (color: StyleType = 'default') => {
     'border-bottom-right-radius': BorderRadius,
   };
 };
-end();
+
 const logStyles = {
   updateOrSaveOrSet: [start(), mid('theme'), end('themeTag')],
   setTheme: [start(), mid('theme'), mid('themeTag'), mid(), end('value')],
@@ -93,7 +93,7 @@ export function LogUpdate(theme: string) {
 }
 export function LogSave(themes: string[]) {
   if (themes.length === 0) {
-    Log({ message: 'Saved (no themes marked as canBeModified)', style: one() });
+    LogSingle('Saved (no themes marked as canBeModified)', one());
     return;
   }
 
@@ -159,18 +159,15 @@ export function LogSetSubProp(property: string, theme: any, key: any, value: any
 }
 
 export function LogInit() {
-  Log({
-    message: 'vTheme Initialized!',
-    style: {
-      background: colors.bg,
-      padding: '3rem',
-      display: 'inline-block',
-      'border-radius': '20px',
-      'font-size': '4rem',
-      'font-weight': 'bold',
-      'text-align': 'center',
-      color: 'white',
-      'text-shadow': '1.5px 1.5px 1px red, -1.5px -1.5px 1px blue',
-    },
+  LogSingle('vTheme Initialized!', {
+    background: colors.bg,
+    padding: '3rem',
+    display: 'inline-block',
+    'border-radius': '20px',
+    'font-size': '4rem',
+    'font-weight': 'bold',
+    'text-align': 'center',
+    color: 'white',
+    'text-shadow': '1.5px 1.5px 1px red, -1.5px -1.5px 1px blue',
   });
 }
