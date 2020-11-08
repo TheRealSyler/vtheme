@@ -59,6 +59,18 @@ test('GenCSS: Scrollbar', () => {
   border-radius: 20px;
 }
 `);
+  const thumbAndTrack = genScrollbarCss({ thumb: '#fff', track: '#000' });
+
+  expect(thumbAndTrack).toEqual(`* {
+  scrollbar-color: #fff #000;
+}
+*::-webkit-scrollbar-track {
+  background-color: #000;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #fff;
+}
+`);
   const thumbHover = genScrollbarCss({ thumbHover: '#eee' });
 
   expect(thumbHover).toEqual(`*::-webkit-scrollbar-thumb:hover {

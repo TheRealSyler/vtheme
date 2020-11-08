@@ -1,11 +1,11 @@
 import { genCssColors } from '../genCss/colors';
 import { genCssFonts } from '../genCss/fonts';
 import { genScrollbarCss } from '../genCss/scrollbar';
-import { Theme } from '../index';
+import { vTheme } from '../index';
 import { clearTheme } from './clear';
 
 test('stylesheets: DOM', () => {
-  new Theme(
+  new vTheme(
     {
       test: {},
     },
@@ -19,7 +19,7 @@ test('stylesheets: DOM', () => {
 test('stylesheets: CSS', () => {
   clearTheme();
 
-  new Theme(
+  new vTheme(
     {
       test: {
         fonts: {

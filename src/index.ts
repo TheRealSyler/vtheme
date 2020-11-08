@@ -1,6 +1,6 @@
-import { Theme } from './theme';
+import { vTheme } from './theme';
 
 export * from './extraFunctions';
 export * from './interfaces';
 export * from './theme';
-export default Theme;
+export default vTheme;

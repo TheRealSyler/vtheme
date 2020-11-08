@@ -1,10 +1,10 @@
 import JestStoreLog from 'jest-store-log';
-import { Theme } from '../theme';
+import { vTheme } from '../theme';
 
 test('Log: All', () => {
   const log = new JestStoreLog();
 
-  const theme = new Theme(
+  const theme = new vTheme(
     {
       Test: {},
     },
@@ -18,7 +18,7 @@ test('Log: All', () => {
   theme.Update();
   expect(log.logs[4]).toEqual('%cUpdated using: %cTest %c(theme)');
   log.logs = [];
-  theme.Themes.set({});
+  theme.set({});
   expect(log.logs[0]).toBe('%cTest %c(theme) %ccannot be modified!');
   log.logs = [];
   theme.SetCurrentTheme('Test');
@@ -28,7 +28,7 @@ test('Log: All', () => {
 
 test('Log: Multiple instances warning', () => {
   const log = new JestStoreLog();
-  new Theme(
+  new vTheme(
     {
       test: {},
     },

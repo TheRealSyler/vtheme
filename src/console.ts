@@ -16,6 +16,9 @@ const padding = `${sPadding} 0`;
 const BorderRadius = '5px';
 const fontSize = '1.2rem';
 
+const themeTag = '(theme)';
+const themesTag = '(themes)';
+
 const start = (color: StyleType = 'default') => ({
   background: colors.bg,
   display: 'inline-block',
@@ -37,6 +40,7 @@ const one = (color: StyleType = 'default') => ({
   'padding-right': '1rem',
   'border-radius': BorderRadius,
 });
+
 type StyleType = keyof typeof colors;
 
 const mid = (color: StyleType = 'default') => {
@@ -48,7 +52,7 @@ const mid = (color: StyleType = 'default') => {
     color: colors[color],
   };
 };
-const end = (color: StyleType = 'default') => {
+const end = (color: StyleType) => {
   return {
     background: colors.bg,
     padding: padding,
@@ -61,7 +65,7 @@ const end = (color: StyleType = 'default') => {
   };
 };
 
-const logStyles = {
+const styles = {
   updateOrSaveOrSet: [start(), mid('theme'), end('themeTag')],
   setTheme: [start(), mid('theme'), mid('themeTag'), mid(), end('value')],
   setSubProp: [
@@ -85,11 +89,14 @@ const logStyles = {
     mid(),
     end('value'),
   ],
+  get: [start(), mid('theme'), end('themeTag')],
+  getProp: [start(), mid('theme'), mid('themeTag'), mid(), end('property')],
+  getSubProp: [start(), mid('theme'), mid('themeTag'), mid(), mid('property'), mid(), end('key')],
   setCurrentTheme: [start(), mid('key'), mid(), mid('theme'), end('themeTag')],
 };
 
 export function LogUpdate(theme: string) {
-  LogS(logStyles.updateOrSaveOrSet, 'Updated using:', theme, '(theme)');
+  LogS(styles.updateOrSaveOrSet, 'Updated using:', theme, themeTag);
 }
 export function LogSave(themes: string[]) {
   if (themes.length === 0) {
@@ -98,11 +105,11 @@ export function LogSave(themes: string[]) {
   }
 
   if (themes.length === 1) {
-    LogS(logStyles.updateOrSaveOrSet, 'Saved:', themes[0].toString(), '(theme)');
+    LogS(styles.updateOrSaveOrSet, 'Saved:', themes[0].toString(), themeTag);
     return;
   }
 
-  LogS(logStyles.updateOrSaveOrSet, 'Saved:', themes.join(', '), '(themes)');
+  LogS(styles.updateOrSaveOrSet, 'Saved:', themes.join(', '), themesTag);
 }
 
 export function LogCannotBeModifiedWarning(theme: any) {
@@ -112,7 +119,7 @@ export function LogCannotBeModifiedWarning(theme: any) {
       style: { ...start('theme'), 'font-weight': 'bold' },
     },
     {
-      message: '(theme)',
+      message: themeTag,
       style: { ...mid('themeTag'), 'font-weight': 'bold' },
     },
     {
@@ -146,16 +153,26 @@ export function LogWarning(message: string, from?: string) {
 }
 
 export function LogSetCurrentTheme(value: any) {
-  LogS(logStyles.setCurrentTheme, 'Set:', 'current theme', 'to', value, '(theme)');
+  LogS(styles.setCurrentTheme, 'Set:', 'current theme', 'to', value, themeTag);
 }
 export function LogSetTheme(theme: string, value: any) {
-  LogS(logStyles.setTheme, 'Set:', theme, '(theme)', 'to', value);
+  LogS(styles.setTheme, 'Set:', theme, themeTag, 'to', value);
 }
 export function LogSetProp(property: string, theme: any, value: any) {
-  LogS(logStyles.setThemeProp, 'Set:', theme, '(theme)', '>', property, 'to', value);
+  LogS(styles.setThemeProp, 'Set:', theme, themeTag, '>', property, 'to', value);
 }
 export function LogSetSubProp(property: string, theme: any, key: any, value: any) {
-  LogS(logStyles.setSubProp, 'Set:', theme, '(theme)', '>', property, '>', key, 'to', value);
+  LogS(styles.setSubProp, 'Set:', theme, themeTag, '>', property, '>', key, 'to', value);
+}
+
+export function LogGet(theme: any) {
+  LogS(styles.get, 'Get:', theme, themeTag);
+}
+export function LogGetProp(theme: any, prop: any) {
+  LogS(styles.getProp, 'Get:', theme, themeTag, '>', prop);
+}
+export function LogGetSubProp(theme: any, prop: any, key: any) {
+  LogS(styles.getSubProp, 'Get:', theme, themeTag, '>', prop, '>', key);
 }
 
 export function LogInit() {
