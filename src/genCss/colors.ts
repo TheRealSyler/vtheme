@@ -4,6 +4,7 @@ export function genCssColors(colors: ITheme['colors']) {
   if (!colors) return '';
   let content = '';
   for (const key in colors) {
+    /* istanbul ignore else */
     if (colors.hasOwnProperty(key)) {
       const color = colors[key];
 

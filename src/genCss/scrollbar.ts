@@ -6,6 +6,7 @@ export function genScrollbarCss(scrollBar: ITheme['scrollBar']) {
 
   const { width, height, track, radius, thumb, thumbHover } = scrollBar;
   const content =
+    genBlock('*', !!thumb && !!track, `  scrollbar-color: ${thumb} ${track};`) +
     genBlock(
       '*::-webkit-scrollbar',
       !!height || !!width,
