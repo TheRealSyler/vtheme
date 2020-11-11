@@ -1,7 +1,7 @@
 ## S.Theme
 
 <span id="BADGE_GENERATION_MARKER_0"></span>
-[![npmV](https://img.shields.io/npm/v/vtheme?color=green)](https://www.npmjs.com/package/vtheme) [![min](https://img.shields.io/bundlephobia/min/vtheme)](https://bundlephobia.com/result?p=vtheme) [![install](https://badgen.net/packagephobia/install/vtheme)](https://packagephobia.now.sh/result?p=vtheme) [![githubLastCommit](https://img.shields.io/github/last-commit/TheRealSyler/vtheme)](https://github.com/TheRealSyler/vtheme)
+[![npmV](https://img.shields.io/npm/v/vtheme?color=green)](https://www.npmjs.com/package/vtheme) [![min](https://img.shields.io/bundlephobia/min/vtheme)](https://bundlephobia.com/result?p=vtheme) [![install](https://badgen.net/packagephobia/install/vtheme)](https://packagephobia.now.sh/result?p=vtheme) [![githubLastCommit](https://img.shields.io/github/last-commit/TheRealSyler/vtheme)](https://github.com/TheRealSyler/vtheme) [![codecov](https://codecov.io/gh/TheRealSyler/vtheme/branch/master/graph/badge.svg)](https://codecov.io/gh/TheRealSyler/vtheme) [![circleci](https://img.shields.io/circleci/build/github/TheRealSyler/vtheme)](https://app.circleci.com/github/TheRealSyler/vtheme/pipelines)
 <span id="BADGE_GENERATION_MARKER_1"></span>
 
 <span id="DOC_GENERATION_MARKER_0"></span>
@@ -27,7 +27,7 @@
 
 ##### ThemeTransitionOptions
 
-```typescript
+```ts
 type ThemeTransitionOptions = {
     removeAfter?: number;
     loops?: number;
@@ -45,7 +45,7 @@ type ThemeTransitionOptions = {
 
 ##### ThemeTransition
 
-```typescript
+```ts
 function ThemeTransition(options?: ThemeTransitionOptions): void;
 ```
 
@@ -53,7 +53,7 @@ function ThemeTransition(options?: ThemeTransitionOptions): void;
 
 ##### ThemeScrollbar
 
-```typescript
+```ts
 interface ThemeScrollbar {
     /**
      * Scrollbar width in Css unit format, `1px` | `1rem` etc.
@@ -92,7 +92,7 @@ interface ThemeScrollbar {
 
 ##### ITheme
 
-```typescript
+```ts
 /**Theme Template Interface */
 interface ITheme {
     name?: string;
@@ -116,7 +116,7 @@ interface ITheme {
 
 ##### ThemeOptions
 
-```typescript
+```ts
 /**Theme Installation Options. */
 interface ThemeOptions {
     debug?: {
@@ -138,14 +138,8 @@ interface ThemeOptions {
 
 ##### vTheme
 
-```typescript
+```ts
 class vTheme<Themes extends IThemes, Theme extends Themes[keyof Themes]> {
-    private _currentTheme;
-    private _themes;
-    private _debug;
-    private _styleSheets;
-    private _log;
-    private _localStorageKey;
     constructor(themes: Themes, defaultTheme: keyof Themes, options?: ThemeOptions);
     /**Gets a theme. */
     get(theme?: keyof Themes): Themes[keyof Themes];
@@ -173,9 +167,6 @@ class vTheme<Themes extends IThemes, Theme extends Themes[keyof Themes]> {
     Update(): void;
     /** Saves the Themes to local Storage. */
     Save(): void;
-    private _themeKey;
-    private _getThemeFromLocalStorage;
-    private _disableLog;
 }
 ```
 
